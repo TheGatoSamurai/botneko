@@ -14,6 +14,7 @@ Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de
 - 💬 Comandos opcionales en Discord para consultar el último post por temática
 - 🖼️ Muestra imágenes de referencia (si están disponibles en el feed)
 - 🔔 Envía notificaciones automáticas a canales específicos
+- 🤖 Responde con inteligencia artificial (OpenAI) cuando lo mencionas con @, con filtro de malas palabras y temas sensibles, y responde con valores cristianos y conservadores
 
 ---
 
