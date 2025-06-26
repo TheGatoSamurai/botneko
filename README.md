@@ -15,6 +15,10 @@ Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de
 - 🖼️ Muestra imágenes de referencia (si están disponibles en el feed)
 - 🔔 Envía notificaciones automáticas a canales específicos
 - 🤖 Responde con inteligencia artificial (OpenAI) cuando lo mencionas con @, con filtro de malas palabras y temas sensibles, y responde con valores cristianos y conservadores
+- 🧠 La IA recuerda el hilo de conversación con cada usuario (máximo 10 mensajes recientes)
+- 👋 Da la bienvenida a nuevos miembros en #🎉llegada-al-hotel
+- 🚪 Informa cuando un usuario se va por sí mismo en #🎉llegada-al-hotel
+- 🚨 Informa cuando un usuario es expulsado por un admin en #🏯shogunato, indicando quién lo expulsó
 
 ---
 

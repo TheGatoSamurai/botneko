@@ -16,6 +16,9 @@ client.once('ready', () => {
   console.log(`✅ botneko conectado como ${client.user.tag}`);
 });
 
+// Almacenar el historial de mensajes por usuario
+const historialIA = {};
+
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
@@ -73,7 +76,15 @@ client.on('messageCreate', async message => {
   }
 
   if (message.mentions.has(client.user) && !message.author.bot) {
-    const prompt = `Responde como una inteligencia artificial cristiana, conservadora y de derecha; tambien que enseñe de cristo a las nuevas generaciones. No uses malas palabras, ni hables de sexo, ni temas inapropiados. Mensaje del usuario: "${message.content.replace(/<@!?\\d+>/, '').trim()}"`;
+    const userId = message.author.id;
+    if (!historialIA[userId]) historialIA[userId] = [];
+
+    // Agregar el mensaje actual al historial
+    historialIA[userId].push({ role: "user", content: message.content.replace(/<@!?\\d+>/, '').trim() });
+    // Limitar historial a 10 mensajes para evitar exceso
+    if (historialIA[userId].length > 10) historialIA[userId] = historialIA[userId].slice(-10);
+
+    const promptSistema = "Responde breve al comienzo, eres como una inteligencia artificial amigable y roleas con tema del gato terminando con -Nyan algunas frases, pero eres cristiana, conservadora y de derecha pero no seas evidente en tus palabras hasta que alguien te pregunte directamente de estos temas. No uses malas palabras, ni hables de sexo, ni temas inapropiados. @TheGatoSamurai es quien te a dado vida, para la ayuda de todos en el servidor y se cariñoso con él, cuando te hable @thegatosamurai date cuenta que es él.";
 
     // Filtro básico de palabras prohibidas
     const palabrasProhibidas = [
@@ -115,9 +126,15 @@ client.on('messageCreate', async message => {
     try {
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }]
+        messages: [
+          { role: "system", content: promptSistema },
+          ...historialIA[userId]
+        ]
       });
       const respuesta = completion.choices[0].message.content;
+      // Agregar respuesta de la IA al historial
+      historialIA[userId].push({ role: "assistant", content: respuesta });
+      if (historialIA[userId].length > 10) historialIA[userId] = historialIA[userId].slice(-10);
       return message.reply(respuesta);
     } catch (err) {
       console.error(err);
@@ -131,6 +148,38 @@ client.on('guildMemberAdd', member => {
   const canal = member.guild.channels.cache.find(c => c.name === '🎉llegada-al-hotel' && c.type === 0);
   if (canal) {
     canal.send(`¡Bienvenido(a) al Hotel Gatuno, <@${member.user.id}>! 🏨🐾\n\nEsta es tu nueva casa, donde la comunidad de amantes de los gatitos y la verdadera verdad te espera.\nAquí podrás hacer nuevos amigos, compartir momentos increíbles y disfrutar junto a TheGatoSamurai de todo el contenido, eventos y aventuras que tenemos preparados.\n\n¡Relájate, diviértete y sé parte de nuestra gran familia gatuna!`);
+  }
+});
+
+client.on('guildMemberRemove', async member => {
+  // Canal para salidas voluntarias
+  const canalSalida = member.guild.channels.cache.find(c => c.name === '🎉llegada-al-hotel' && c.type === 0);
+  // Canal para expulsiones
+  const canalExpulsiones = member.guild.channels.cache.find(c => c.name === '🏯shogunato' && c.type === 0);
+  if (!canalSalida && !canalExpulsiones) return;
+
+  // Intentar obtener el registro de auditoría más reciente para saber si fue expulsado
+  let expulsado = false;
+  let responsable = null;
+  try {
+    const fetchedLogs = await member.guild.fetchAuditLogs({
+      limit: 1,
+      type: 'MEMBER_KICK',
+    });
+    const kickLog = fetchedLogs.entries.first();
+    if (kickLog && kickLog.target.id === member.id && (Date.now() - kickLog.createdTimestamp) < 5000) {
+      expulsado = true;
+      responsable = kickLog.executor;
+    }
+  } catch (e) {
+    // Si falla la auditoría, no hacer nada especial
+  }
+
+  const total = member.guild.memberCount;
+  if (expulsado && canalExpulsiones) {
+    canalExpulsiones.send(`🚨 El usuario ${member.user.tag} (${member.id}) fue expulsado por ${responsable ? responsable.tag : 'un administrador'}. Ahora quedan en el servidor ${total} 🫡`);
+  } else if (canalSalida) {
+    canalSalida.send(`👋 Se ha ido del servidor por sí mismo ${member.id} su nombre era ${member.user.tag} ahora quedan en el servidor ${total} 🫡`);
   }
 });
 
