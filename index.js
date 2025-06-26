@@ -3,7 +3,10 @@ const Parser = require('rss-parser');
 const parser = new Parser();
 require('dotenv').config();
 const feeds = require('./feeds.json');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require("openai");
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
@@ -110,11 +113,11 @@ client.on('messageCreate', async message => {
     }
 
     try {
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }]
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }]
       });
-      const respuesta = completion.data.choices[0].message.content;
+      const respuesta = completion.choices[0].message.content;
       return message.reply(respuesta);
     } catch (err) {
       console.error(err);
@@ -135,7 +138,5 @@ function extractImage(content) {
   const match = content?.match(/<img.*?src="(.*?)"/);
   return match ? match[1] : null;
 }
-
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY }));
 
 client.login(process.env.DISCORD_TOKEN);
