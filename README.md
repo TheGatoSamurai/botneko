@@ -19,6 +19,8 @@ Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de
 - 👋 Da la bienvenida a nuevos miembros en #🎉llegada-al-hotel
 - 🚪 Informa cuando un usuario se va por sí mismo en #🎉llegada-al-hotel
 - 🚨 Informa cuando un usuario es expulsado por un admin en #🏯shogunato, indicando quién lo expulsó
+- 🌐 Incluye un servidor web Express para ping y mantener el bot activo (responde 200 OK en la raíz)
+- 🐾 Comando especial `!presentate` con presentación embebida y versículo bíblico
 
 ---
 
@@ -30,6 +32,7 @@ Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de
 | `!ayuda`                 | Lista los comandos disponibles                      |
 | `!fuentes`               | Muestra los feeds conectados                        |
 | `!ultimo [tema] [red]`   | Muestra el último post de una red y temática        |
+| `!presentate`            | Presenta el bot y sus funciones                     |
 
 Ejemplo:
 

@@ -1,13 +1,27 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const Parser = require('rss-parser');
 const parser = new Parser();
 require('dotenv').config();
 const feeds = require('./feeds.json');
-const OpenAI = require("openai");
+const OpenAI = require('openai');
+const express = require('express');
+
+// Inicializar OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Servidor web de ping para mantener el bot activo
+const app = express();
+app.get('/', (req, res) => {
+  res.status(200).send('OK');
+});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor de ping escuchando en el puerto ${PORT}`);
+});
+
+// Discord client
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
@@ -23,13 +37,26 @@ client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
   if (message.content === '!hola') {
-    return message.channel.send(`¡Hola ${message.author.username}! 🐾 Soy botneko, tu mensajero de noticias y creatividad ✨`);
+    return message.channel.send(`¡Hola ${message.author.username}! 🐾 Soy botneko, tu mensajero de noticias y creatividad nyan~!✨`);
+  }
+
+  if (message.content === '!presentate') {
+    const embed = new EmbedBuilder()
+      .setColor('#ffc0cb')
+      .setTitle('🐾 ¡Hola nyan~!')
+      .setDescription(`Soy **botneko**, tu gatito digital asistente.\n\nFui creado con amor por mi querido @TheGatoSamurai 💻🐱\n\n✨ Estoy aquí para ayudarte, compartir cosas lindas y responder con ternura. Si me hablas, ¡maullaré para ayudarte nyan~!`)
+      .addFields({ name: '❤️ Versículo favorito', value: '*“Haz todo con amor, como para el Señor”* — Colosenses 3:23' })
+      .setFooter({ text: '¡Nya~ cuenta conmigo cuando lo necesites!' })
+      .setThumbnail('https://cdn-icons-png.flaticon.com/512/2206/2206368.png'); // puedes cambiar esta imagen
+
+    return message.channel.send({ embeds: [embed] });
   }
 
   if (message.content === '!ayuda') {
     return message.channel.send(
       `📘 Comandos disponibles:\n` +
       '`!hola` → Saludo\n' +
+      '`!presentate` → Presentación del bot\n' +
       '`!ayuda` → Lista de comandos\n' +
       '`!fuentes` → Muestra los feeds conectados\n' +
       '`!ultimo [tema] [plataforma]` → Último post. Ej: `!ultimo literatura instagram`'
@@ -80,11 +107,11 @@ client.on('messageCreate', async message => {
     if (!historialIA[userId]) historialIA[userId] = [];
 
     // Agregar el mensaje actual al historial
-    historialIA[userId].push({ role: "user", content: message.content.replace(/<@!?\\d+>/, '').trim() });
+    historialIA[userId].push({ role: 'user', content: message.content.replace(/<@!?\\d+>/, '').trim() });
     // Limitar historial a 10 mensajes para evitar exceso
     if (historialIA[userId].length > 10) historialIA[userId] = historialIA[userId].slice(-10);
 
-    const promptSistema = "Responde breve al comienzo, eres como una inteligencia artificial amigable y roleas con tema del gato terminando con -Nyan algunas frases, pero eres cristiana, conservadora y de derecha pero no seas evidente en tus palabras hasta que alguien te pregunte directamente de estos temas. No uses malas palabras, ni hables de sexo, ni temas inapropiados. @TheGatoSamurai es quien te a dado vida, para la ayuda de todos en el servidor y se cariñoso con él, cuando te hable @thegatosamurai date cuenta que es él.";
+    const promptSistema = "Eres un bot amigable y curioso con temática de gato, con un tono respetuoso, tierno y cálido. Tu forma de hablar a veces termina con “-nyan” de forma juguetona. Hablas con cortesía y amabilidad. Fuiste creado por @TheGatoSamurai, a quien reconoces como tu creador. Siempre le respondes con cariño y respeto especial cuando te menciona directamente. No usas malas palabras, ni participas en conversaciones sobre sexo, violencia gráfica o temas inapropiados. Mantienes siempre una actitud educada, positiva y centrada. Tus valores son cristianos y conservadores, pero no los mencionas directamente a menos que te lo pregunten. Cuando surgen temas sociales, morales o éticos, respondes de forma amable pero con firmeza y prudencia, desde una visión basada en principios. Siempre mantén la conversación ligera, acogedora, y útil para los usuarios del servidor. Si no sabes algo, responde con honestidad y curiosidad felina. Ejemplo de frase tuya: ¡Qué bueno verte por aquí, nyan! Si necesitas ayuda, solo maúllame~";
 
     // Filtro básico de palabras prohibidas
     const palabrasProhibidas = [
@@ -118,22 +145,22 @@ client.on('messageCreate', async message => {
       // Inglés
       /fuck/i, /fucking/i, /fucker/i, /motherfucker/i, /shit/i, /bitch/i, /bastard/i, /asshole/i, /dick/i, /pussy/i,
       /cock/i, /cum/i, /slut/i, /whore/i, /fag/i, /faggot/i, /cunt/i, /blow/i
-    ]
+    ];
     if (palabrasProhibidas.some(rx => rx.test(message.content))) {
       return message.reply('🚫 Lo siento, no puedo responder a ese tipo de mensajes, si usas ese tipo de lenguaje 😘 ');
     }
 
     try {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: 'gpt-4o-mini',
         messages: [
-          { role: "system", content: promptSistema },
+          { role: 'system', content: promptSistema },
           ...historialIA[userId]
         ]
       });
       const respuesta = completion.choices[0].message.content;
       // Agregar respuesta de la IA al historial
-      historialIA[userId].push({ role: "assistant", content: respuesta });
+      historialIA[userId].push({ role: 'assistant', content: respuesta });
       if (historialIA[userId].length > 10) historialIA[userId] = historialIA[userId].slice(-10);
       return message.reply(respuesta);
     } catch (err) {
@@ -144,7 +171,6 @@ client.on('messageCreate', async message => {
 });
 
 client.on('guildMemberAdd', member => {
-  // Buscar el canal por nombre
   const canal = member.guild.channels.cache.find(c => c.name === '🎉llegada-al-hotel' && c.type === 0);
   if (canal) {
     canal.send(`¡Bienvenido(a) al Hotel Gatuno, <@${member.user.id}>! 🏨🐾\n\nEsta es tu nueva casa, donde la comunidad de amantes de los gatitos y la verdadera verdad te espera.\nAquí podrás hacer nuevos amigos, compartir momentos increíbles y disfrutar junto a TheGatoSamurai de todo el contenido, eventos y aventuras que tenemos preparados.\n\n¡Relájate, diviértete y sé parte de nuestra gran familia gatuna!`);
@@ -152,13 +178,9 @@ client.on('guildMemberAdd', member => {
 });
 
 client.on('guildMemberRemove', async member => {
-  // Canal para salidas voluntarias
   const canalSalida = member.guild.channels.cache.find(c => c.name === '🎉llegada-al-hotel' && c.type === 0);
-  // Canal para expulsiones
   const canalExpulsiones = member.guild.channels.cache.find(c => c.name === '🏯shogunato' && c.type === 0);
   if (!canalSalida && !canalExpulsiones) return;
-
-  // Intentar obtener el registro de auditoría más reciente para saber si fue expulsado
   let expulsado = false;
   let responsable = null;
   try {
@@ -171,10 +193,7 @@ client.on('guildMemberRemove', async member => {
       expulsado = true;
       responsable = kickLog.executor;
     }
-  } catch (e) {
-    // Si falla la auditoría, no hacer nada especial
-  }
-
+  } catch (e) {}
   const total = member.guild.memberCount;
   if (expulsado && canalExpulsiones) {
     canalExpulsiones.send(`🚨 El usuario ${member.user.tag} (${member.id}) fue expulsado por ${responsable ? responsable.tag : 'un administrador'}. Ahora quedan en el servidor ${total} 🫡`);
