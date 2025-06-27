@@ -21,6 +21,7 @@ Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de
 - 🚨 Informa cuando un usuario es expulsado por un admin en #🏯shogunato, indicando quién lo expulsó
 - 🌐 Incluye un servidor web Express para ping y mantener el bot activo (responde 200 OK en la raíz)
 - 🐾 Comando especial `!presentate` con presentación embebida y versículo bíblico
+- 🎧 Estado personalizado: muestra "Escuchando ronroneando y ayudando a los humanos 🐾✨" como actividad del bot
 
 ---
 
@@ -56,11 +57,14 @@ Ejemplo:
 
 ```
 botneko/
-├── index.js
-├── feeds.json
-├── .env
-├── .gitignore
-└── README.md
+├── index.js              # Archivo principal del bot (eventos, comandos, IA, Express)
+├── feeds.json            # Configuración de feeds RSS y canales de Discord
+├── feedWatcher.js        # Módulo para vigilar y publicar nuevos feeds automáticamente
+├── keepAlive.js          # Servidor Express para mantener el bot activo (ping/healthcheck)
+├── lastPosts.json        # Persistencia de los últimos posts publicados por feed
+├── LICENSE               # Licencia MIT del proyecto
+├── package.json          # Dependencias y scripts del proyecto
+└── README.md             # Documentación y guía de uso
 ```
 
 ---
@@ -92,6 +96,8 @@ botneko/
 
 ```
 DISCORD_TOKEN=TU_TOKEN_DE_DISCORD
+OPENAI_API_KEY=TU_API_KEY_OPENAI
+PORT=3000
 ```
 > ⚠️ **No subas nunca este archivo a GitHub.**
 

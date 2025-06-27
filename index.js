@@ -28,6 +28,8 @@ const client = new Client({
 
 client.once('ready', () => {
   console.log(`✅ botneko conectado como ${client.user.tag}`);
+  // Personalización de estado: "Escuchando ronroneando y ayudando a los humanos 🐾✨"
+  client.user.setActivity('ronroneando y ayudando a los humanos 🐾✨', { type: 2 }); // 2 = LISTENING
 });
 
 // Almacenar el historial de mensajes por usuario
@@ -83,7 +85,10 @@ client.on('messageCreate', async message => {
 
     try {
       const feed = await parser.parseURL(match.url);
-      const item = feed.items[0];
+      const item = feed.items && feed.items[0];
+      if (!item) {
+        return message.channel.send('⚠️ No se encontraron publicaciones en este feed.');
+      }
 
       const embed = {
         title: item.title || 'Nueva publicación',
@@ -101,6 +106,14 @@ client.on('messageCreate', async message => {
       return message.channel.send('🚫 Hubo un problema al obtener el feed.');
     }
   }
+
+  const { startWatcher } = require('./feedWatcher');
+
+  client.once('ready', () => {
+    console.log(`✅ ¡Botneko listo como ${client.user.tag}!`);
+    startWatcher(client); // Inicia la lectura de feeds
+    
+});
 
   if (message.mentions.has(client.user) && !message.author.bot) {
     const userId = message.author.id;
