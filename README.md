@@ -1,27 +1,31 @@
-# 🤖 botneko
+# 🤖 botneko – Bot de Discord con IA, RSS y Estilo Kawaii-Cristiano
 
-Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra RSS de redes sociales como Instagram, TikTok y YouTube. Está pensado para **compartir automáticamente nuevos contenidos** de dos cuentas principales:
+![GitHub Repo stars](https://img.shields.io/github/stars/TheGatoSamurai/botneko?style=social)
+![GitHub forks](https://img.shields.io/github/forks/TheGatoSamurai/botneko?style=social)
+![MIT License](https://img.shields.io/github/license/TheGatoSamurai/botneko)
+
+Bienvenido a **botneko**, un bot de Discord hecho con Node.js que integra IA y RSS desde redes sociales como Instagram, TikTok y YouTube. Está diseñado para **compartir automáticamente nuevos contenidos** de dos cuentas principales:
 
 - 🎭 [@damianruaj](https://instagram.com/damianruaj): literatura, ética, espiritualidad, poesía y reflexión.
 - 💻 [@thegatosamurai](https://instagram.com/thegatosamurai): tecnología, desarrollo web, tutoriales y contenido creativo.
 
+> 🐾 Nació para ayudar en comunidad, aprendiendo entre versos y líneas de código – Nyan~
 ---
 
 ## ⚙️ Características
 
 - ✅ Lee feeds RSS desde una instancia personalizada de RSSHub
 - 📡 Soporte para Instagram, TikTok y YouTube
-- 💬 Comandos opcionales en Discord para consultar el último post por temática
-- 🖼️ Muestra imágenes de referencia (si están disponibles en el feed)
+- 🖼️ Muestra imágenes destacadas (si están disponibles en el feed)
+- 💬 Comandos opcionales para consultar el último post según temática
 - 🔔 Envía notificaciones automáticas a canales específicos
-- 🤖 Responde con inteligencia artificial (OpenAI) cuando lo mencionas con @, con filtro de malas palabras y temas sensibles, y responde con valores cristianos y conservadores
-- 🧠 La IA recuerda el hilo de conversación con cada usuario (máximo 10 mensajes recientes)
-- 👋 Da la bienvenida a nuevos miembros en #🎉llegada-al-hotel
-- 🚪 Informa cuando un usuario se va por sí mismo en #🎉llegada-al-hotel
-- 🚨 Informa cuando un usuario es expulsado por un admin en #🏯shogunato, indicando quién lo expulsó
-- 🌐 Incluye un servidor web Express para ping y mantener el bot activo (responde 200 OK en la raíz)
-- 🐾 Comando especial `!presentate` con presentación embebida y versículo bíblico
-- 🎧 Estado personalizado: muestra "Escuchando ronroneando y ayudando a los humanos 🐾✨" como actividad del bot
+- 🧠 Incluye IA de OpenAI con memoria breve de conversación
+- 🤖 IA con personalidad: estilo amigable, valores cristianos y tono kawaii
+- 👋 Da la bienvenida y despide usuarios con eventos personalizados
+- 🚪 Informa expulsiones e identifica al moderador responsable
+- 🌐 Incluye servidor Express para mantener activo el bot vía Railway
+- 🎧 Estado personalizado: “Escuchando ronroneando y ayudando a los humanos 🐾✨”
+- 📖 Comando especial `!presentate` con introducción embebida y versículo
 
 ---
 
@@ -57,14 +61,14 @@ Ejemplo:
 
 ```
 botneko/
-├── index.js              # Archivo principal del bot (eventos, comandos, IA, Express)
-├── feeds.json            # Configuración de feeds RSS y canales de Discord
-├── feedWatcher.js        # Módulo para vigilar y publicar nuevos feeds automáticamente
-├── keepAlive.js          # Servidor Express para mantener el bot activo (ping/healthcheck)
-├── lastPosts.json        # Persistencia de los últimos posts publicados por feed
-├── LICENSE               # Licencia MIT del proyecto
-├── package.json          # Dependencias y scripts del proyecto
-└── README.md             # Documentación y guía de uso
+├── index.js # Archivo principal (comandos, IA, eventos)
+├── feeds.json # Configuración de feeds RSS y canales de Discord
+├── feedWatcher.js # Módulo para vigilar y publicar nuevos feeds
+├── keepAlive.js # Servidor Express (ping para uptime)
+├── lastPosts.json # Persistencia de últimos posts vistos
+├── .env.example # Variables de entorno sugeridas
+├── LICENSE # Licencia del proyecto (MIT)
+└── README.md # Este documento
 ```
 
 ---
@@ -102,6 +106,15 @@ PORT=3000
 > ⚠️ **No subas nunca este archivo a GitHub.**
 
 ---
+## 💻 Despliegue
+
+Este bot puede alojarse fácilmente en Railway:
+- Crea una cuenta en railway.app
+- Conecta tu repositorio de GitHub
+- Agrega las variables .env necesarias
+- Railway ejecutará automáticamente el bot con node index.js
+
+---
 
 ## ✨ Autor
 
@@ -128,6 +141,7 @@ Inspirado por el deseo de conectar lo literario y lo técnico en un solo espacio
 - 🔀 Enviar un pull request
 
 Tu participación ayuda a hacer crecer este proyecto. ¡Gracias por tu apoyo! 🐾
+Por favor, sigue el estilo del proyecto: limpio, ordenado, sin lenguaje ofensivo y con respeto por la comunidad.
 
 ---
 
@@ -136,13 +150,4 @@ Tu participación ayuda a hacer crecer este proyecto. ¡Gracias por tu apoyo! �
 Este proyecto está bajo la **Licencia MIT**.
 
 Puedes usarlo, modificarlo y distribuirlo libremente, siempre que incluyas el aviso de derechos de autor y la licencia original.
-
-
-
-
-
-
-
-
-
-
+-Eres libre de usarlo, modificarlo y compartirlo. Solo recuerda dejar los créditos. 🐾

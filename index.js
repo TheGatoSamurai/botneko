@@ -14,11 +14,11 @@ const openai = new OpenAI({
 // Servidor web de ping para mantener el bot activo
 const app = express();
 app.get('/', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send('Botneko está activo. Nyan~ 🐾');
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor de ping escuchando en el puerto ${PORT}`);
+  console.log(`🟢 Servidor web de keep-alive activo en el puerto${PORT}`);
 });
 
 // Discord client
@@ -28,8 +28,8 @@ const client = new Client({
 
 client.once('ready', () => {
   console.log(`✅ botneko conectado como ${client.user.tag}`);
-  // Personalización de estado: "Escuchando ronroneando y ayudando a los humanos 🐾✨"
-  client.user.setActivity('ronroneando y ayudando a los humanos 🐾✨', { type: 2 }); // 2 = LISTENING
+  // Personalización de estado: "Escuchando Ronroneando y ayudando a los humanos 🐾✨"
+  client.user.setActivity('Ronroneando y ayudando a los humanos 🐾✨', { type: 2 }); // 2 = LISTENING
 });
 
 // Almacenar el historial de mensajes por usuario
