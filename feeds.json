@@ -33,5 +33,12 @@
     "usuario": "thegatosamurai",
     "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3-a-JKH1e7iRBtOHenWRMQ",
     "channelId": "💡tecnología-y-novedades"
+  },
+  {
+    "tema": "literatura",
+    "plataforma": "blog",
+    "usuario": "damiancarmesi",
+    "url": "https://damiancarmesi.blogspot.com/feeds/posts/default?alt=rss",
+    "channelId": "📜mensajes-espirituales"
   }
 ]
