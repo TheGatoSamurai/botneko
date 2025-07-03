@@ -193,7 +193,10 @@ client.on('guildMemberAdd', member => {
 client.on('guildMemberRemove', async member => {
   const canalSalida = member.guild.channels.cache.find(c => c.name === '🎉llegada-al-hotel' && c.type === 0);
   const canalExpulsiones = member.guild.channels.cache.find(c => c.name === '🏯shogunato' && c.type === 0);
-  if (!canalSalida && !canalExpulsiones) return;
+  if (!canalSalida && !canalExpulsiones) {
+    console.log('No se encontraron los canales de salida ni expulsiones.');
+    return;
+  }
   let expulsado = false;
   let responsable = null;
   try {
@@ -202,15 +205,20 @@ client.on('guildMemberRemove', async member => {
       type: 'MEMBER_KICK',
     });
     const kickLog = fetchedLogs.entries.first();
-    if (kickLog && kickLog.target.id === member.id && (Date.now() - kickLog.createdTimestamp) < 5000) {
+    if (kickLog && kickLog.target.id === member.id && (Date.now() - kickLog.createdTimestamp) < 15000) {
       expulsado = true;
       responsable = kickLog.executor;
+      console.log(`Expulsión detectada: ${member.user.tag} por ${responsable ? responsable.tag : 'desconocido'}`);
+    } else {
+      console.log('No se detectó expulsión reciente para', member.user.tag);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error al buscar logs de auditoría:', e);
+  }
   const total = member.guild.memberCount;
   if (expulsado && canalExpulsiones) {
     canalExpulsiones.send(`🚨 El usuario ${member.user.tag} (${member.id}) fue expulsado por ${responsable ? responsable.tag : 'un administrador'}. Ahora quedan en el servidor ${total} 🫡`);
-  } else if (canalSalida) {
+  } else if (!expulsado && canalSalida) {
     canalSalida.send(`👋 Se ha ido del servidor por sí mismo ${member.id} su nombre era ${member.user.tag} ahora quedan en el servidor ${total} 🫡`);
   }
 });
